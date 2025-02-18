@@ -55,6 +55,32 @@
             background-color: #45a049;
         }
 
+        .history-container {
+            margin-top: 30px;
+            width: 80%;
+            max-width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .history {
+            margin-top: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background-color: #ffeb3b;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+            text-align: center;
+            color: #333;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
         @keyframes bounce {
             0% {
                 transform: translateY(-20px);
@@ -69,6 +95,11 @@
                 opacity: 1;
             }
         }
+
+        .disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -79,10 +110,22 @@
         <div class="dice" id="dice1"></div>
     </div>
 
-    <button class="roll-button" onclick="rollDice()">Roll Dice</button>
+    <button class="roll-button" id="rollButton" onclick="rollDice()">Roll Dice</button>
+
+    <div class="history-container">
+        <h2>History Log</h2>
+        <div id="history" class="history">No rolls yet.</div>
+    </div>
 
     <script>
+        let hasRolled = false; // Flag to track if the dice has been rolled
+        let historyLog = []; // Array to store history of rolls
+
         function rollDice() {
+            if (hasRolled) {
+                return; // Do nothing if the dice has already been rolled
+            }
+
             const dice1 = document.getElementById('dice1');
 
             // Dice values
@@ -101,9 +144,26 @@
             dice1.textContent = roll1;
 
             // Play dice roll sound
-            const diceSound = new Audio('"https://drive.google.com/uc?export=download&id=1DwISyDgJPt8VtiEBAawdg4Ps-EeZcZFa
-"'); // Replace 'dice-roll.mp3' with your sound file path
+            const diceSound = new Audio('https://drive.google.com/uc?export=download&id=1DwISyDgJPt8VtiEBAawdg4Ps-EeZcZFa');
             diceSound.play();
+
+            // Add roll result to history
+            historyLog.push(`Roll: ${roll1}`);
+            updateHistory();
+
+            // Set flag to true, disabling further rolls
+            hasRolled = true;
+
+            // Disable the button after rolling
+            const rollButton = document.getElementById('rollButton');
+            rollButton.classList.add('disabled'); // Add a disabled class for styling
+            rollButton.disabled = true; // Disable the button
+        }
+
+        // Update history log display
+        function updateHistory() {
+            const historyElement = document.getElementById('history');
+            historyElement.innerHTML = historyLog.join('<br>');
         }
     </script>
 
