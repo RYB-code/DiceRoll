@@ -35,7 +35,7 @@
         .dice {
             width: 100px;
             height: 100px;
-            background-color: #f1f1f1;
+            background-color: white;
             border-radius: 10px;
             display: flex;
             justify-content: center;
@@ -44,9 +44,114 @@
             font-weight: bold;
             box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
             margin: 0 10px;
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: bounce 0.6s ease-out forwards;
+            position: relative;
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            background-color: black;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .dot1 { 
+            top: 40%; 
+            left: 40%; 
+        }
+
+        .dot2 { 
+            top: 20%; 
+            left: 20%; /* Top-left corner */
+        }
+
+        .dot2-2 { 
+            bottom: 20%; 
+            right: 20%; /* Bottom-right corner */
+        }
+
+        .dot3 { 
+            top: 20%; 
+            left: 20%; 
+            bottom: 20%; 
+            right: 20%; 
+        }
+
+        .dot4 { 
+            top: 20%; 
+            left: 20%; /* Top-left corner */
+        }
+
+        .dot4-2 { 
+            top: 20%; 
+            right: 20%; /* Top-right corner */
+        }
+
+        .dot4-3 { 
+            bottom: 20%; 
+            left: 20%; /* Bottom-left corner */
+        }
+
+        .dot4-4 { 
+            bottom: 20%; 
+            right: 20%; /* Bottom-right corner */
+        }
+
+        .dot5 { 
+            bottom: 20%; 
+            right: 20%; 
+        }
+
+        .dot6 { 
+            top: 20%; 
+            left: 20%; 
+            bottom: 20%; 
+            right: 20%; 
+        }
+
+        .dot3-1 { /* Top left for dot3 */
+            top: 20%;
+            left: 20%;
+        }
+
+        .dot3-2 { /* Center dot for dot3 */
+            top: 40%;
+            left: 40%;
+        }
+
+        .dot3-3 { /* Bottom right for dot3 */
+            bottom: 20%;
+            right: 20%;
+        }
+
+        .dot6-1 { /* Top left for dot6 */
+            top: 15%;
+            left: 15%;
+        }
+
+        .dot6-2 { /* Middle left for dot6 */
+            top: 40%;
+            left: 15%;
+        }
+
+        .dot6-3 { /* Bottom left for dot6 */
+            bottom: 15%;
+            left: 15%;
+        }
+
+        .dot6-4 { /* Top right for dot6 */
+            top: 15%;
+            right: 15%;
+        }
+
+        .dot6-5 { /* Middle right for dot6 */
+            top: 40%;
+            right: 15%;
+        }
+
+        .dot6-6 { /* Bottom right for dot6 */
+            bottom: 15%;
+            right: 15%;
         }
 
         .roll-button {
@@ -98,27 +203,11 @@
             text-align: center;
         }
 
-        @keyframes bounce {
-            0% {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            50% {
-                transform: translateY(10px);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
         .disabled {
             background-color: #ddd;
             cursor: not-allowed;
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -143,11 +232,11 @@
         .modal input {
             margin: 10px 0;
             padding: 10px;
-            width: 90%; /* Slightly smaller width */
+            width: 90%;
             font-size: 1rem;
             border-radius: 5px;
             border: 1px solid #ccc;
-            margin-left: 5%; /* Moves the input fields a bit to the left */
+            margin-left: 5%;
         }
 
         .modal button {
@@ -163,6 +252,52 @@
 
         .modal button:hover {
             background-color: #45a049;
+        }
+
+        /* Congratulations ribbon */
+        .congratulations-ribbon {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffeb3b;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 5px;
+            display: none;
+        }
+
+        /* Fireworks effect */
+        .fireworks {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 0, 0, 1);
+            border-radius: 50%;
+            animation: firework-animation 1s infinite;
+        }
+
+        @keyframes firework-animation {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-300px) scale(2);
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -183,7 +318,9 @@
     </div>
 
     <div class="dice-container">
-        <div class="dice" id="dice1"></div>
+        <div class="dice" id="dice1">
+            <!-- Dot pattern for dice faces will be added dynamically -->
+        </div>
     </div>
 
     <button class="roll-button" id="rollButton" onclick="rollDice()" disabled>Roll Dice</button>
@@ -195,11 +332,18 @@
         <div id="history" class="history">No rolls yet.</div>
     </div>
 
+    <!-- Congratulations Ribbon -->
+    <div id="congratulations" class="congratulations-ribbon">Congratulations!</div>
+
+    <!-- Fireworks Effect -->
+    <div id="fireworks" class="fireworks"></div>
+
     <script>
         let hasRolled = false;
         let historyLog = [];
         let userName = '';
         let userPhone = '';
+        let fireworkInterval;
 
         // Show the modal on page load
         window.onload = function() {
@@ -212,9 +356,7 @@
             userPhone = document.getElementById('phone').value;
 
             if (userName && userPhone) {
-                // Hide modal
                 document.getElementById('modal').style.display = 'none';
-                // Enable the Roll Dice button
                 document.getElementById('rollButton').disabled = false;
             } else {
                 alert('Please fill in both fields!');
@@ -228,40 +370,91 @@
             }
 
             const dice1 = document.getElementById('dice1');
-            const roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
+            const rollButton = document.getElementById('rollButton');
+            const congratulationsRibbon = document.getElementById('congratulations');
+            const fireworks = document.getElementById('fireworks');
 
-            dice1.style.animation = 'none';
-            setTimeout(() => { dice1.style.animation = ''; }, 10);
-            dice1.textContent = roll1;
+            let roll1;
+
+            // Dice roll simulation (5 seconds)
+            let rollingTime = 5000; // 5 seconds
+            let timer = setInterval(function() {
+                roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
+                updateDiceDisplay(roll1);
+            }, 100);
+
+            // After 5 seconds, stop the dice roll
+            setTimeout(function() {
+                clearInterval(timer);
+                roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
+                updateDiceDisplay(roll1);
+
+                // Display Congratulations Ribbon
+                congratulationsRibbon.style.display = 'block';
+                setTimeout(function() {
+                    congratulationsRibbon.style.display = 'none';
+                }, 20000);
+
+                // Trigger Fireworks
+                triggerFireworks();
+
+                // Record roll in history
+                historyLog.push(`Roll: ${roll1}`);
+                updateHistory();
+
+                // Disable the button and set flag
+                hasRolled = true;
+                rollButton.disabled = true;
+            }, rollingTime);
 
             // Play sound
             const diceSound = new Audio('https://drive.google.com/uc?export=download&id=1DwISyDgJPt8VtiEBAawdg4Ps-EeZcZFa');
             diceSound.play();
+        }
 
-            // Record roll in history
-            historyLog.push(`Roll: ${roll1}`);
-            updateHistory();
+        // Update Dice Display with correct dot classes
+        function updateDiceDisplay(roll) {
+            const dice1 = document.getElementById('dice1');
+            dice1.innerHTML = ''; // Clear the previous dots
 
-            // Disable the button and set flag
-            hasRolled = true;
-            document.getElementById('rollButton').disabled = true;
-
-            // Store data (You can use local storage for testing or connect to backend to save data)
-            const userData = {
-                name: userName,
-                phone: userPhone,
-                rollHistory: historyLog
-            };
-
-            console.log(userData); // Log to the console for now
-
-            // You would send this data to your backend here to save it to Google Sheets or a database.
+            if (roll === 1) {
+                dice1.innerHTML = '<div class="dot dot1"></div>';
+            } else if (roll === 2) {
+                dice1.innerHTML = '<div class="dot dot2"></div><div class="dot dot2-2"></div>';
+            } else if (roll === 3) {
+                dice1.innerHTML = '<div class="dot dot3-1"></div><div class="dot dot3-2"></div><div class="dot dot3-3"></div>';
+            } else if (roll === 4) {
+                dice1.innerHTML = '<div class="dot dot4"></div><div class="dot dot4-2"></div><div class="dot dot4-3"></div><div class="dot dot4-4"></div>';
+            } else if (roll === 5) {
+                dice1.innerHTML = '<div class="dot dot2"></div><div class="dot dot3"></div><div class="dot dot4"></div><div class="dot dot5"></div><div class="dot dot1"></div>';
+            } else if (roll === 6) {
+                dice1.innerHTML = '<div class="dot dot6-1"></div><div class="dot dot6-2"></div><div class="dot dot6-3"></div><div class="dot dot6-4"></div><div class="dot dot6-5"></div><div class="dot dot6-6"></div>';
+            }
         }
 
         // Update History Log Display
         function updateHistory() {
             const historyElement = document.getElementById('history');
             historyElement.innerHTML = historyLog.join('<br>');
+        }
+
+        // Trigger Fireworks Effect
+        function triggerFireworks() {
+            const fireworksContainer = document.getElementById('fireworks');
+
+            // Generate fireworks
+            for (let i = 0; i < 10; i++) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                firework.style.left = Math.random() * 100 + '%';
+                firework.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                fireworksContainer.appendChild(firework);
+            }
+
+            // Clear fireworks after animation
+            setTimeout(function() {
+                fireworksContainer.innerHTML = '';
+            }, 50000);
         }
     </script>
 
