@@ -442,22 +442,21 @@
     });
 }
 
-const data = {
-  name: '123',
-  phone: '123',
-  roll: 5
-};
-
-fetch('https://script.google.com/macros/s/AKfycbz5-O2Z8VSBWfyoJR4_SbDXJLkfCt0Pwq3gy0Fi7NY0Wu4lWucBjGFNHBDr4bthVyFT/exec', {
-  method: 'POST',
+fetch('https://script.google.com/macros/s/AKfycbwNyY25vkfn05sMw-Wx7E_WuI1c46tviLBFiPdvb5w5WOUoAfZJqjYPhnWWc1-Lw5V7/exec', {
+  method: 'POST',  // Make sure you're using POST
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json',  // Specify that the request body is JSON
   },
-  body: JSON.stringify(data)
+  body: JSON.stringify({
+    name: 'John Doe',
+    phone: '1234567890',
+    roll: 5
+  }),
 })
-.then(response => response.json())
-.then(data => console.log('Success:', data))
-.catch((error) => console.error('Error:', error));
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+
 
 
         // Update Dice Display with correct dot classes
