@@ -14,15 +14,14 @@
             height: 100vh;
             margin: 0;
             flex-direction: column;
-            position: relative; /* Added to position the logo relative to the body */
+            position: relative;
         }
 
-        /* Logo positioning in the top-right corner */
         .logo {
             position: absolute;
             top: 20px;
             right: 20px;
-            width: 100px; /* Adjust size of your logo */
+            width: 100px;
             height: auto;
         }
 
@@ -91,12 +90,11 @@
             box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Warning message style */
         .warning {
             margin-top: 10px;
             font-size: 1.2rem;
             font-weight: bold;
-            color: #d32f2f; /* Red color for the warning */
+            color: #d32f2f;
             text-align: center;
         }
 
@@ -119,23 +117,77 @@
             background-color: #ddd;
             cursor: not-allowed;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 350px;
+            text-align: center;
+        }
+
+        .modal input {
+            margin: 10px 0;
+            padding: 10px;
+            width: 90%; /* Slightly smaller width */
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-left: 5%; /* Moves the input fields a bit to the left */
+        }
+
+        .modal button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .modal button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Logo placed in the top-right corner -->
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT8Be2A17SDMoWohdOUSYtb4o6SXsW3XLeWQ&s" alt="Logo" class="logo"> <!-- Replace "<img src=""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT8Be2A17SDMoWohdOUSYtb4o6SXsW3XLeWQ&s"" alt="Logo" class="logo">
-" with the path to your logo image -->
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT8Be2A17SDMoWohdOUSYtb4o6SXsW3XLeWQ&s" alt="Logo" class="logo">
 
     <h1>Dice Roller</h1>
+
+    <!-- Modal for Name and Phone Input -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Enter Your Details</h2>
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="text" id="phone" placeholder="Your Phone Number" required>
+            <button onclick="submitForm()">Submit</button>
+        </div>
+    </div>
 
     <div class="dice-container">
         <div class="dice" id="dice1"></div>
     </div>
 
-    <button class="roll-button" id="rollButton" onclick="rollDice()">Roll Dice</button>
+    <button class="roll-button" id="rollButton" onclick="rollDice()" disabled>Roll Dice</button>
 
-    <!-- Warning message -->
     <div id="warning" class="warning">Only One Attempt!</div>
 
     <div class="history-container">
@@ -144,49 +196,69 @@
     </div>
 
     <script>
-        let hasRolled = false; // Flag to track if the dice has been rolled
-        let historyLog = []; // Array to store history of rolls
+        let hasRolled = false;
+        let historyLog = [];
+        let userName = '';
+        let userPhone = '';
 
+        // Show the modal on page load
+        window.onload = function() {
+            document.getElementById('modal').style.display = 'flex';
+        };
+
+        // Submit form and hide modal
+        function submitForm() {
+            userName = document.getElementById('name').value;
+            userPhone = document.getElementById('phone').value;
+
+            if (userName && userPhone) {
+                // Hide modal
+                document.getElementById('modal').style.display = 'none';
+                // Enable the Roll Dice button
+                document.getElementById('rollButton').disabled = false;
+            } else {
+                alert('Please fill in both fields!');
+            }
+        }
+
+        // Roll Dice Function
         function rollDice() {
             if (hasRolled) {
-                return; // Do nothing if the dice has already been rolled
+                return;
             }
 
             const dice1 = document.getElementById('dice1');
+            const roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
 
-            // Dice values
-            const diceValues = [1, 2, 3, 4, 5, 6];
-
-            // Random dice roll
-            const roll1 = diceValues[Math.floor(Math.random() * diceValues.length)];
-
-            // Add animation (restart by removing and adding class)
             dice1.style.animation = 'none';
-            setTimeout(() => {
-                dice1.style.animation = '';
-            }, 10);
-
-            // Display dice value
+            setTimeout(() => { dice1.style.animation = ''; }, 10);
             dice1.textContent = roll1;
 
-            // Play dice roll sound
+            // Play sound
             const diceSound = new Audio('https://drive.google.com/uc?export=download&id=1DwISyDgJPt8VtiEBAawdg4Ps-EeZcZFa');
             diceSound.play();
 
-            // Add roll result to history
+            // Record roll in history
             historyLog.push(`Roll: ${roll1}`);
             updateHistory();
 
-            // Set flag to true, disabling further rolls
+            // Disable the button and set flag
             hasRolled = true;
+            document.getElementById('rollButton').disabled = true;
 
-            // Disable the button after rolling
-            const rollButton = document.getElementById('rollButton');
-            rollButton.classList.add('disabled'); // Add a disabled class for styling
-            rollButton.disabled = true; // Disable the button
+            // Store data (You can use local storage for testing or connect to backend to save data)
+            const userData = {
+                name: userName,
+                phone: userPhone,
+                rollHistory: historyLog
+            };
+
+            console.log(userData); // Log to the console for now
+
+            // You would send this data to your backend here to save it to Google Sheets or a database.
         }
 
-        // Update history log display
+        // Update History Log Display
         function updateHistory() {
             const historyElement = document.getElementById('history');
             historyElement.innerHTML = historyLog.join('<br>');
