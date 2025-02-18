@@ -14,6 +14,16 @@
             height: 100vh;
             margin: 0;
             flex-direction: column;
+            position: relative; /* Added to position the logo relative to the body */
+        }
+
+        /* Logo positioning in the top-right corner */
+        .logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 200px; /* Adjust size of your logo */
+            height: auto;
         }
 
         .dice-container {
@@ -112,6 +122,10 @@
     </style>
 </head>
 <body>
+
+    <!-- Logo placed in the top-right corner -->
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT8Be2A17SDMoWohdOUSYtb4o6SXsW3XLeWQ&s" alt="Logo" class="logo"> <!-- Replace "<img src=""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT8Be2A17SDMoWohdOUSYtb4o6SXsW3XLeWQ&s"" alt="Logo" class="logo">
+" with the path to your logo image -->
 
     <h1>Dice Roller</h1>
 
