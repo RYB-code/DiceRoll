@@ -402,6 +402,9 @@
                 historyLog.push(`Roll: ${roll1}`);
                 updateHistory();
 
+                // Save data to Google Sheets
+                saveToGoogleSheets(userName, userPhone, roll1);
+
                 // Disable the button and set flag
                 hasRolled = true;
                 rollButton.disabled = true;
@@ -411,6 +414,28 @@
             const diceSound = new Audio('https://drive.google.com/uc?export=download&id=1DwISyDgJPt8VtiEBAawdg4Ps-EeZcZFa');
             diceSound.play();
         }
+   
+ // Function to save data to Google Sheets via Apps Script
+    function saveToGoogleSheets(name, phone, roll) {
+        const url = 'https://script.google.com/macros/s/AKfycbzjN1V6DTc05Z6XSUCWFQ4BLoOPca3C3Surm6EruLtXVaWN8zOoc8SiAAWedkoEfEjC/exec'; // Replace with the URL of your Google Apps Script
+        const payload = {
+            "name": name,
+            "phone": phone,
+            "roll": roll
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => console.log('Data saved:', data))
+        .catch(error => console.error('Error:', error));
+    }
+
 
         // Update Dice Display with correct dot classes
         function updateDiceDisplay(roll) {
