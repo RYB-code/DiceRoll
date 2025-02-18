@@ -442,6 +442,24 @@
     });
 }
 
+const data = {
+  name: '123',
+  phone: '123',
+  roll: 5
+};
+
+fetch('https://script.google.com/macros/s/AKfycbz5-O2Z8VSBWfyoJR4_SbDXJLkfCt0Pwq3gy0Fi7NY0Wu4lWucBjGFNHBDr4bthVyFT/exec', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => console.log('Success:', data))
+.catch((error) => console.error('Error:', error));
+
+
         // Update Dice Display with correct dot classes
         function updateDiceDisplay(roll) {
             const dice1 = document.getElementById('dice1');
