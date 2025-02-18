@@ -417,7 +417,7 @@
    
  // Function to save data to Google Sheets via Apps Script
     function saveToGoogleSheets(name, phone, roll) {
-    const url = 'https://script.google.com/macros/s/AKfycbz5-O2Z8VSBWfyoJR4_SbDXJLkfCt0Pwq3gy0Fi7NY0Wu4lWucBjGFNHBDr4bthVyFT/exec';  // Your updated Apps Script URL
+    const url = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec';  // Your updated Apps Script URL
     const payload = {
         "name": name,
         "phone": phone,
@@ -442,21 +442,24 @@
     });
 }
 
-fetch('https://script.google.com/macros/s/AKfycbwNyY25vkfn05sMw-Wx7E_WuI1c46tviLBFiPdvb5w5WOUoAfZJqjYPhnWWc1-Lw5V7/exec', {
-  method: 'POST',  // Make sure you're using POST
+fetch('https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec', {
+  method: 'POST',
   headers: {
-    'Content-Type': 'application/json',  // Specify that the request body is JSON
+    'Content-Type': 'text/plain' // Avoids preflight checks
   },
   body: JSON.stringify({
-    name: 'John Doe',
-    phone: '1234567890',
-    roll: 5
-  }),
+    name: name,
+    phone: phone,
+    roll: rollNumber
+  })
 })
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
-
+.then(response => response.json())
+.then(data => {
+  console.log('Success:', data);
+})
+.catch(error => {
+  console.error('Error:', error);
+});
 
 
         // Update Dice Display with correct dot classes
