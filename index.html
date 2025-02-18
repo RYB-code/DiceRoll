@@ -417,25 +417,30 @@
    
  // Function to save data to Google Sheets via Apps Script
     function saveToGoogleSheets(name, phone, roll) {
-        const url = 'https://script.google.com/macros/s/AKfycbzDLgqZyVGUt_ckwlO_stDriV6hq-SxJT3p4pcuNaIAJUd4onSWbgASO7nHckForaMz/exec'; // Replace with the URL of your Google Apps Script
-        const payload = {
-            "name": name,
-            "phone": phone,
-            "roll": roll
-        };
+    const url = 'https://script.google.com/macros/s/AKfycbwKEE_M_E8xijb6t0Z1BK4xLS5sgBzjp04yew6dMOs/dev';  // Your updated Apps Script URL
+    const payload = {
+        "name": name,
+        "phone": phone,
+        "roll": roll
+    };
 
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => console.log('Data saved:', data))
-        .catch(error => console.error('Error:', error));
-    }
+    console.log("Sending data to Google Sheets:", payload); // Debugging log
 
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data saved:', data);  // Debugging log
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 
         // Update Dice Display with correct dot classes
         function updateDiceDisplay(roll) {
