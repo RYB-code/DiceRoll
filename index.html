@@ -401,7 +401,7 @@
             fetch(url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'text/plain' // Use text/plain to avoid preflight
+                    'Content-Type': 'application/json' // Use text/plain to avoid preflight
                 },
                 body: JSON.stringify(payload),
                 mode: 'no-cors' // Disable CORS
@@ -411,6 +411,7 @@
             })
             .catch(error => {
                 console.error('Error:', error);
+                alert('There was an issue sending the data. Please try again later.');
             });
         }
 
