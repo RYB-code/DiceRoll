@@ -311,8 +311,8 @@
     <div id="modal" class="modal">
         <div class="modal-content">
             <h2>Enter Your Details</h2>
-            <input type="text" id="name" placeholder="Your Name" autocomplete="name" required>
-            <input type="text" id="phone" placeholder="Your Phone Number" autocomplete="tel" required>
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="text" id="phone" placeholder="Your Phone Number" required>
             <button onclick="submitForm()">Submit</button>
         </div>
     </div>
@@ -388,35 +388,41 @@
         }
 
         // Function to save data to Google Sheets
-       function saveToGoogleSheets(name, phone, roll) {
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec'; 
+        function saveToGoogleSheets(name, phone, roll) {
+            const url = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec';  // Your Apps Script URL
+            const payload = {
+                "name": name,
+                "phone": phone,
+                "roll": roll
+            };
 
-    fetch(scriptUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            name: name,
-            phone: phone,
-            roll: roll,
-        }),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+            console.log("Sending data to Google Sheets:", payload); // Debugging log
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain' // Use text/plain to avoid preflight
+                },
+                body: JSON.stringify(payload),
+                mode: 'no-cors' // Disable CORS
+            })
+            .then(() => {
+                console.log('Data sent (response not accessible due to no-cors)');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
-        return response.json(); // This will attempt to parse the JSON response
-    })
-    .then(data => {
-        console.log('Data saved successfully:', data);
-    })
-    .catch((error) => {
-        console.error('Error saving data:', error);
-    });
-}
 
-
+// Define probabilities (these are just example values; adjust as needed)
+    const probabilities = {
+        1: 0.3, // 30% chance of rolling a 1
+        2: 0.1, // 10% chance of rolling a 2
+        3: 0.2, // 20% chance of rolling a 3
+        4: 0.1, // 10% chance of rolling a 4
+        5: 0.1, // 10% chance of rolling a 5
+        6: 0.2  // 20% chance of rolling a 6
+    };
 
 // Roll Dice Function
 function rollDice() {
@@ -434,14 +440,14 @@ function rollDice() {
     // Dice roll simulation (5 seconds)
     let rollingTime = 5000; // 5 seconds
     let timer = setInterval(function() {
-        roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
+        roll1 = weightedRoll(probabilities); // Get a weighted roll
         updateDiceDisplay(roll1);
     }, 100);
 
     // After 5 seconds, stop the dice roll
     setTimeout(function() {
         clearInterval(timer);
-        roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
+        roll1 = weightedRoll(probabilities); // Get a weighted roll;
         updateDiceDisplay(roll1);
 
         // Display Congratulations Ribbon
@@ -465,6 +471,55 @@ function rollDice() {
         rollButton.disabled = true;
     }, rollingTime);
 
+}
+
+// Weighted roll function that considers probabilities   
+    function weightedRoll(probabilities) {
+        const rollValues = Object.keys(probabilities);
+        const cumulativeProbabilities = [];
+        let cumulativeSum = 0;
+
+        // Create cumulative probability array
+        for (let i = 0; i < rollValues.length; i++) {
+            cumulativeSum += probabilities[rollValues[i]];
+            cumulativeProbabilities.push(cumulativeSum);
+        }
+
+        // Generate a random number and select the corresponding roll
+        const randomNum = Math.random();
+        for (let i = 0; i < cumulativeProbabilities.length; i++) {
+            if (randomNum < cumulativeProbabilities[i]) {
+                return parseInt(rollValues[i]);
+            }
+        }
+        return parseInt(rollValues[rollValues.length - 1]); // In case of rounding errors
+    }
+// Function to save data to Google Sheets
+function saveToGoogleSheets(name, phone, roll) {
+    const url = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec';  // Your Apps Script URL
+    const payload = {
+        "name": name,
+        "phone": phone,
+        "roll": roll
+    };
+
+
+    console.log("Sending data to Google Sheets:", payload); // Debugging log
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain' // Use text/plain to avoid preflight
+        },
+        body: JSON.stringify(payload),
+        mode: 'no-cors' // Disable CORS
+    })
+    .then(() => {
+        console.log('Data sent (response not accessible due to no-cors)');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
         // Update Dice Display with correct dot classes
         function updateDiceDisplay(roll) {
