@@ -151,6 +151,7 @@
                     'Content-Type': 'text/plain' // Use text/plain to avoid preflight
                 },
                 body: JSON.stringify(payload),
+                mode: 'no-cors' // Disable CORS
             })
             .then(() => {
                 console.log('Data sent (response not accessible due to no-cors)');
