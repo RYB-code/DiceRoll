@@ -5,40 +5,306 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dice Roller</title>
     <style>
-        /* Your CSS */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: auto;
+        }
+
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .dice {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+            margin: 0 10px;
+            position: relative;
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            background-color: black;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .dot1 { 
+            top: 40%; 
+            left: 40%; 
+        }
+
+        .dot2 { 
+            top: 20%; 
+            left: 20%; /* Top-left corner */
+        }
+
+        .dot2-2 { 
+            bottom: 20%; 
+            right: 20%; /* Bottom-right corner */
+        }
+
+        .dot3 { 
+            top: 20%; 
+            left: 20%; 
+            bottom: 20%; 
+            right: 20%; 
+        }
+
+        .dot4 { 
+            top: 20%; 
+            left: 20%; /* Top-left corner */
+        }
+
+        .dot4-2 { 
+            top: 20%; 
+            right: 20%; /* Top-right corner */
+        }
+
+        .dot4-3 { 
+            bottom: 20%; 
+            left: 20%; /* Bottom-left corner */
+        }
+
+        .dot4-4 { 
+            bottom: 20%; 
+            right: 20%; /* Bottom-right corner */
+        }
+
+        .dot5 { 
+            bottom: 20%; 
+            right: 20%; 
+        }
+
+        .dot6 { 
+            top: 20%; 
+            left: 20%; 
+            bottom: 20%; 
+            right: 20%; 
+        }
+
+        .dot3-1 { /* Top left for dot3 */
+            top: 20%;
+            left: 20%;
+        }
+
+        .dot3-2 { /* Center dot for dot3 */
+            top: 40%;
+            left: 40%;
+        }
+
+        .dot3-3 { /* Bottom right for dot3 */
+            bottom: 20%;
+            right: 20%;
+        }
+
+        .dot6-1 { /* Top left for dot6 */
+            top: 15%;
+            left: 15%;
+        }
+
+        .dot6-2 { /* Middle left for dot6 */
+            top: 40%;
+            left: 15%;
+        }
+
+        .dot6-3 { /* Bottom left for dot6 */
+            bottom: 15%;
+            left: 15%;
+        }
+
+        .dot6-4 { /* Top right for dot6 */
+            top: 15%;
+            right: 15%;
+        }
+
+        .dot6-5 { /* Middle right for dot6 */
+            top: 40%;
+            right: 15%;
+        }
+
+        .dot6-6 { /* Bottom right for dot6 */
+            bottom: 15%;
+            right: 15%;
+        }
+
+        .roll-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .roll-button:hover {
+            background-color: #45a049;
+        }
+
+        .history-container {
+            margin-top: 30px;
+            width: 80%;
+            max-width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .history {
+            margin-top: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background-color: #ffeb3b;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+            text-align: center;
+            color: #333;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .warning {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #d32f2f;
+            text-align: center;
+        }
+
+        .disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+
+        /* Congratulations ribbon */
+        .congratulations-ribbon {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffeb3b;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 5px;
+            display: none;
+        }
+
+        /* Fireworks effect */
+        .fireworks {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 0, 0, 1);
+            border-radius: 50%;
+            animation: firework-animation 1s infinite;
+        }
+
+        @keyframes firework-animation {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-300px) scale(2);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
 
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT8Be2A17SDMoWohdOUSYtb4o6SXsW3XLeWQ&s" alt="Logo" class="logo">
+
     <h1>Dice Roller</h1>
+
     <div class="dice-container">
-        <div class="dice" id="dice1"></div>
+        <div class="dice" id="dice1">
+            <!-- Dot pattern for dice faces will be added dynamically -->
+        </div>
     </div>
 
-    <button class="roll-button" id="rollButton" onclick="rollDice()">Roll Dice</button>
+    <button class="roll-button" id="rollButton" onclick="rollDice()" disabled>Roll Dice</button>
+
     <div id="warning" class="warning">Only One Attempt!</div>
+
     <div class="history-container">
         <h2>History Log</h2>
         <div id="history" class="history">No rolls yet.</div>
     </div>
 
-    <!-- User Info Form (Initially Hidden) -->
-    <div id="formContainer" style="display: none;">
-        <h2>Enter Your Details</h2>
-        <input type="text" id="name" name="name" placeholder="Enter your name">
-        <input type="text" id="phone" name="phone" placeholder="Enter your phone number">
-        <button onclick="submitForm()">Submit</button>
-    </div>
-
+    <!-- Congratulations Ribbon -->
     <div id="congratulations" class="congratulations-ribbon">Congratulations!</div>
+
+    <!-- Fireworks Effect -->
     <div id="fireworks" class="fireworks"></div>
+
+    <!-- Modal for Name and Phone Input after roll -->
+    <div id="formModal" class="modal">
+        <div class="modal-content">
+            <h2>Enter Your Details</h2>
+            <p>Roll Result: <span id="rollResultDisplay"></span></p>
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="text" id="phone" placeholder="Your Phone Number" required>
+            <button onclick="submitForm()">Submit</button>
+        </div>
+    </div>
 
     <script>
         let hasRolled = false;
         let historyLog = [];
         let userName = '';
         let userPhone = '';
+        let rollResult = null;
+        let fireworkInterval;
+
+        // Enable the Roll Dice button after the page loads
+        window.onload = function() {
+            document.getElementById('rollButton').disabled = false;
+        };
 
         // Roll Dice Function
         function rollDice() {
@@ -66,6 +332,10 @@
                 roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
                 updateDiceDisplay(roll1);
 
+                // Show the result in the modal and ask for details
+                document.getElementById('rollResultDisplay').textContent = roll1;
+                document.getElementById('formModal').style.display = 'flex';
+
                 // Display Congratulations Ribbon
                 congratulationsRibbon.style.display = 'block';
                 setTimeout(function() {
@@ -79,16 +349,50 @@
                 historyLog.push(`Roll: ${roll1}`);
                 updateHistory();
 
-                // Show the form after the roll
-                document.getElementById('formContainer').style.display = 'block';
-
-                // Save data to Google Sheets
-                saveToGoogleSheets(userName, userPhone, roll1);
-
                 // Disable the button and set flag
                 hasRolled = true;
                 rollButton.disabled = true;
             }, rollingTime);
+        }
+
+        // Submit form and hide modal
+        function submitForm() {
+            userName = document.getElementById('name').value;
+            userPhone = document.getElementById('phone').value;
+
+            if (userName && userPhone) {
+                document.getElementById('formModal').style.display = 'none';
+                saveToGoogleSheets(userName, userPhone, rollResult);
+            } else {
+                alert('Please fill in both fields!');
+            }
+        }
+
+        // Function to save data to Google Sheets
+        function saveToGoogleSheets(name, phone, roll) {
+            const url = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec';  // Your Apps Script URL
+            const payload = {
+                "name": name,
+                "phone": phone,
+                "roll": roll
+            };
+
+            console.log("Sending data to Google Sheets:", payload); // Debugging log
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain' // Use text/plain to avoid preflight
+                },
+                body: JSON.stringify(payload),
+                mode: 'no-cors' // Disable CORS
+            })
+            .then(() => {
+                console.log('Data sent (response not accessible due to no-cors)');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
 
         // Update Dice Display with correct dot classes
@@ -135,45 +439,7 @@
                 fireworksContainer.innerHTML = '';
             }, 50000);
         }
-
-        // Function to save data to Google Sheets
-        function saveToGoogleSheets(name, phone, roll) {
-            const url = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec';  // Your Apps Script URL
-            const payload = {
-                "name": name,
-                "phone": phone,
-                "roll": roll
-            };
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'text/plain' // Use text/plain to avoid preflight
-                },
-                body: JSON.stringify(payload),
-                mode: 'no-cors' // Disable CORS
-            })
-            .then(() => {
-                console.log('Data sent (response not accessible due to no-cors)');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        // Submit the form after roll is completed
-        function submitForm() {
-            userName = document.getElementById('name').value;
-            userPhone = document.getElementById('phone').value;
-
-            if (userName && userPhone) {
-                // Hide the form after submission
-                document.getElementById('formContainer').style.display = 'none';
-                alert('Form submitted successfully!');
-            } else {
-                alert('Please fill in both fields!');
-            }
-        }
     </script>
+
 </body>
 </html>
