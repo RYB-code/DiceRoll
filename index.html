@@ -5,29 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dice Roller</title>
     <style>
-        /* Same CSS as before */
+        /* Your CSS */
     </style>
 </head>
 <body>
 
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT8Be2A17SDMoWohdOUSYtb4o6SXsW3XLeWQ&s" alt="Logo" class="logo">
-
     <h1>Dice Roller</h1>
-
-    <!-- Dice Container -->
     <div class="dice-container">
-        <div class="dice" id="dice1">
-            <!-- Dot pattern for dice faces will be added dynamically -->
-        </div>
+        <div class="dice" id="dice1"></div>
     </div>
 
-    <!-- Roll Dice Button -->
     <button class="roll-button" id="rollButton" onclick="rollDice()">Roll Dice</button>
-
-    <!-- Warning Text -->
     <div id="warning" class="warning">Only One Attempt!</div>
-
-    <!-- History Log -->
     <div class="history-container">
         <h2>History Log</h2>
         <div id="history" class="history">No rolls yet.</div>
@@ -41,10 +31,7 @@
         <button onclick="submitForm()">Submit</button>
     </div>
 
-    <!-- Congratulations Ribbon -->
     <div id="congratulations" class="congratulations-ribbon">Congratulations!</div>
-
-    <!-- Fireworks Effect -->
     <div id="fireworks" class="fireworks"></div>
 
     <script>
@@ -187,6 +174,5 @@
             }
         }
     </script>
-
 </body>
 </html>
