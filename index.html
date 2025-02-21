@@ -208,6 +208,52 @@
             cursor: not-allowed;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 350px;
+            text-align: center;
+        }
+
+        .modal input {
+            margin: 10px 0;
+            padding: 10px;
+            width: 90%;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-left: 5%;
+        }
+
+        .modal button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .modal button:hover {
+            background-color: #45a049;
+        }
+
         /* Congratulations ribbon */
         .congratulations-ribbon {
             position: absolute;
@@ -261,6 +307,16 @@
 
     <h1>Dice Roller</h1>
 
+    <!-- Modal for Name and Phone Input -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Enter Your Details</h2>
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="text" id="phone" placeholder="Your Phone Number" required>
+            <button onclick="submitForm()">Submit</button>
+        </div>
+    </div>
+
     <div class="dice-container">
         <div class="dice" id="dice1">
             <!-- Dot pattern for dice faces will be added dynamically -->
@@ -282,78 +338,17 @@
     <!-- Fireworks Effect -->
     <div id="fireworks" class="fireworks"></div>
 
-    <!-- Modal for Name and Phone Input after roll -->
-    <div id="formModal" class="modal">
-        <div class="modal-content">
-            <h2>Enter Your Details</h2>
-            <p>Roll Result: <span id="rollResultDisplay"></span></p>
-            <input type="text" id="name" placeholder="Your Name" required>
-            <input type="text" id="phone" placeholder="Your Phone Number" required>
-            <button onclick="submitForm()">Submit</button>
-        </div>
-    </div>
-
     <script>
         let hasRolled = false;
         let historyLog = [];
         let userName = '';
         let userPhone = '';
-        let rollResult = null;
         let fireworkInterval;
 
-        // Enable the Roll Dice button after the page loads
+        // Show the modal on page load
         window.onload = function() {
-            document.getElementById('rollButton').disabled = false;
+            document.getElementById('modal').style.display = 'flex';
         };
-
-        // Roll Dice Function
-        function rollDice() {
-            if (hasRolled) {
-                return;
-            }
-
-            const dice1 = document.getElementById('dice1');
-            const rollButton = document.getElementById('rollButton');
-            const congratulationsRibbon = document.getElementById('congratulations');
-            const fireworks = document.getElementById('fireworks');
-
-            let roll1;
-
-            // Dice roll simulation (5 seconds)
-            let rollingTime = 5000; // 5 seconds
-            let timer = setInterval(function() {
-                roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
-                updateDiceDisplay(roll1);
-            }, 100);
-
-            // After 5 seconds, stop the dice roll
-            setTimeout(function() {
-                clearInterval(timer);
-                roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
-                updateDiceDisplay(roll1);
-
-                // Show the result in the modal and ask for details
-                document.getElementById('rollResultDisplay').textContent = roll1;
-                document.getElementById('formModal').style.display = 'flex';
-
-                // Display Congratulations Ribbon
-                congratulationsRibbon.style.display = 'block';
-                setTimeout(function() {
-                    congratulationsRibbon.style.display = 'none';
-                }, 20000);
-
-                // Trigger Fireworks
-                triggerFireworks();
-
-                // Record roll in history
-                historyLog.push(`Roll: ${roll1}`);
-                updateHistory();
-
-                // Disable the button and set flag
-                hasRolled = true;
-                rollButton.disabled = true;
-            }, rollingTime);
-        }
 
         // Submit form and hide modal
         function submitForm() {
@@ -361,8 +356,32 @@
             userPhone = document.getElementById('phone').value;
 
             if (userName && userPhone) {
-                document.getElementById('formModal').style.display = 'none';
-                saveToGoogleSheets(userName, userPhone, rollResult);
+                document.getElementById('modal').style.display = 'none';
+                document.getElementById('rollButton').disabled = false;
+            } else {
+                alert('Please fill in both fields!');
+            }
+        }
+
+        // Function to handle form submission
+        function handleFormSubmit(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            // Get values from the modal inputs
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const roll = 6; // Replace with the actual roll value if dynamic
+
+            // Validate inputs
+            if (name && phone) {
+                // Save data to Google Sheets
+                saveToGoogleSheets(name, phone, roll);
+
+                // Close the modal (optional)
+                document.getElementById('modal').style.display = 'none';
+
+                // Enable the Roll Dice button (optional)
+                document.getElementById('rollButton').disabled = false;
             } else {
                 alert('Please fill in both fields!');
             }
@@ -395,6 +414,81 @@
             });
         }
 
+// Roll Dice Function
+function rollDice() {
+    if (hasRolled) {
+        return;
+    }
+
+    const dice1 = document.getElementById('dice1');
+    const rollButton = document.getElementById('rollButton');
+    const congratulationsRibbon = document.getElementById('congratulations');
+    const fireworks = document.getElementById('fireworks');
+
+    let roll1;
+
+    // Dice roll simulation (5 seconds)
+    let rollingTime = 5000; // 5 seconds
+    let timer = setInterval(function() {
+        roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
+        updateDiceDisplay(roll1);
+    }, 100);
+
+    // After 5 seconds, stop the dice roll
+    setTimeout(function() {
+        clearInterval(timer);
+        roll1 = [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
+        updateDiceDisplay(roll1);
+
+        // Display Congratulations Ribbon
+        congratulationsRibbon.style.display = 'block';
+        setTimeout(function() {
+            congratulationsRibbon.style.display = 'none';
+        }, 20000);
+
+        // Trigger Fireworks
+        triggerFireworks();
+
+        // Record roll in history
+        historyLog.push(`Roll: ${roll1}`);
+        updateHistory();
+
+        // Save data to Google Sheets
+        saveToGoogleSheets(userName, userPhone, roll1);
+
+        // Disable the button and set flag
+        hasRolled = true;
+        rollButton.disabled = true;
+    }, rollingTime);
+
+}
+
+// Function to save data to Google Sheets
+function saveToGoogleSheets(name, phone, roll) {
+    const url = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec';  // Your Apps Script URL
+    const payload = {
+        "name": name,
+        "phone": phone,
+        "roll": roll
+    };
+
+    console.log("Sending data to Google Sheets:", payload); // Debugging log
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain' // Use text/plain to avoid preflight
+        },
+        body: JSON.stringify(payload),
+        mode: 'no-cors' // Disable CORS
+    })
+    .then(() => {
+        console.log('Data sent (response not accessible due to no-cors)');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
         // Update Dice Display with correct dot classes
         function updateDiceDisplay(roll) {
             const dice1 = document.getElementById('dice1');
