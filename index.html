@@ -401,16 +401,21 @@
             phone: phone,
             roll: roll,
         }),
-        mode: 'no-cors',
     })
-    .then(response => response.text()) // Get the response as text
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); // This will attempt to parse the JSON response
+    })
     .then(data => {
-        console.log('Response from Google Apps Script:', data);
+        console.log('Data saved successfully:', data);
     })
     .catch((error) => {
         console.error('Error saving data:', error);
     });
 }
+
 
 
 // Roll Dice Function
@@ -460,31 +465,6 @@ function rollDice() {
         rollButton.disabled = true;
     }, rollingTime);
 
-}
-
-// Function to save data to Google Sheets
-function saveToGoogleSheets(name, phone, roll) {
-  const scriptUrl = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec'; // Replace with your Google Apps Script URL
-
-  fetch(scriptUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: name,
-      phone: phone,
-      roll: roll,
-    }),
-    mode: 'no-cors', // Disable CORS
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('Data saved successfully:', data);
-    })
-    .catch((error) => {
-      console.error('Error saving data:', error);
-    });
 }
         // Update Dice Display with correct dot classes
         function updateDiceDisplay(roll) {
