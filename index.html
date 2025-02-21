@@ -477,6 +477,7 @@ function saveToGoogleSheets(name, phone, roll) {
       phone: phone,
       roll: roll,
     }),
+    mode: 'no-cors', // Disable CORS
   })
     .then((response) => response.json())
     .then((data) => {
