@@ -388,37 +388,38 @@
         }
 
         // Function to save data to Google Sheets
-      const url = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec';  // Replace with your actual Web App URL
+        function saveToGoogleSheets(name, phone, roll) {
+            const url = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec';  // Your Apps Script URL
+            const payload = {
+                "name": name,
+                "phone": phone,
+                "roll": roll
+            };
 
-      const payload = {
-      name: "John Doe",
-      phone: "123-456-7890",
-      roll: "001"
-};
+            console.log("Sending data to Google Sheets:", payload); // Debugging log
 
-       fetch(url, {
-       method: 'POST',
-       headers: {
-          'Content-Type': 'application/json'  // Ensure you're using application/json
-    },
-       body: JSON.stringify(payload)
-})
-.then(response => response.json())
-.then(data => {
-    console.log('Success:', data);
-})
-.catch(error => {
-    console.error('Error:', error);
-});
-
-
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain' // Use text/plain to avoid preflight
+                },
+                body: JSON.stringify(payload),
+                mode: 'no-cors' // Disable CORS
+            })
+            .then(() => {
+                console.log('Data sent (response not accessible due to no-cors)');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
 
 // Define probabilities (these are just example values; adjust as needed)
     const probabilities = {
-        1: 0.3, // 30% chance of rolling a 1
-        2: 0.1, // 10% chance of rolling a 2
+        1: 0.2, // 30% chance of rolling a 1
+        2: 0.2, // 10% chance of rolling a 2
         3: 0.2, // 20% chance of rolling a 3
-        4: 0.1, // 10% chance of rolling a 4
+        4: 0.2, // 10% chance of rolling a 4
         5: 0.1, // 10% chance of rolling a 5
         6: 0.2  // 20% chance of rolling a 6
     };
@@ -534,7 +535,7 @@ function saveToGoogleSheets(name, phone, roll) {
             } else if (roll === 4) {
                 dice1.innerHTML = '<div class="dot dot4"></div><div class="dot dot4-2"></div><div class="dot dot4-3"></div><div class="dot dot4-4"></div>';
             } else if (roll === 5) {
-                dice1.innerHTML = '<div class="dot dot2"></div><div class="dot dot3"></div><div class="dot dot4"></div><div class="dot dot5"></div><div class="dot dot1"></div>';
+                dice1.innerHTML = '<div class="dot dot4"></div><div class="dot dot4-2"></div><div class="dot dot4-3"></div><div class="dot dot4-4"></div><div class="dot dot3-2"></div>';
             } else if (roll === 6) {
                 dice1.innerHTML = '<div class="dot dot6-1"></div><div class="dot dot6-2"></div><div class="dot dot6-3"></div><div class="dot dot6-4"></div><div class="dot dot6-5"></div><div class="dot dot6-6"></div>';
             }
