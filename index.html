@@ -431,7 +431,7 @@
 
         function weightedRoll() {
             const rollValues = [1, 2, 3, 4, 5, 6];
-            const probabilities = [0.2, 0.2, 0.2, 0.2, 0.1, 0.2];
+            const probabilities = [0.0, 0.0, 0.0, 0.0, 0.8, 0.2];
 
             const cumulativeProbabilities = [];
             let cumulativeSum = 0;
@@ -474,16 +474,35 @@
             historyElement.innerHTML = historyLog.join('<br>'); // Update the history log display
         }
 
+        // 格式化时间戳为人类可读的时间
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp); // 将时间戳转换为 Date 对象
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份补零
+            const day = String(date.getDate()).padStart(2, '0'); // 日期补零
+            const hours = String(date.getHours()).padStart(2, '0'); // 小时补零
+            const minutes = String(date.getMinutes()).padStart(2, '0'); // 分钟补零
+            const seconds = String(date.getSeconds()).padStart(2, '0'); // 秒补零
+
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; // 返回格式化时间
+        }
+
+        // 保存数据到 Firebase
         function saveToFirebase(name, phone, roll) {
-            const newRollRef = push(ref(database, 'rolls'));
+            const newRollRef = push(ref(database, 'rolls')); // 创建一个新的引用
+            const timestamp = Date.now(); // 获取当前时间的时间戳
+            const formattedTime = formatTimestamp(timestamp); // 将时间戳转换为人类可读的时间
+
             set(newRollRef, {
                 name: name,
                 phone: phone,
                 roll: roll,
-                timestamp: Date.now()
-            }).then(() => {
+                time: formattedTime // 保存格式化时间
+            })
+            .then(() => {
                 console.log('Data sent to Firebase');
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 console.error('Error:', error);
             });
         }
