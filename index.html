@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dice Roller</title>
     <style>
-                body {
+                        body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             display: flex;
@@ -358,6 +358,7 @@
         let hasRolled = false;
         let userName = '';
         let userPhone = '';
+        let historyLog = []; // Array to store roll history
 
         // Show modal on page load
         window.onload = function () {
@@ -418,6 +419,10 @@
                 // Save data to Firebase
                 saveToFirebase(userName, userPhone, roll1);
 
+                // Update history log
+                historyLog.push(`Roll: ${roll1}`); // Add the roll to the history log
+                updateHistory(); // Update the history log display
+
                 // Disable the button and set flag
                 hasRolled = true;
                 rollButton.disabled = true;
@@ -462,6 +467,11 @@
             } else if (roll === 6) {
                 dice1.innerHTML = '<div class="dot dot6-1"></div><div class="dot dot6-2"></div><div class="dot dot6-3"></div><div class="dot dot6-4"></div><div class="dot dot6-5"></div><div class="dot dot6-6"></div>';
             }
+        }
+
+        function updateHistory() {
+            const historyElement = document.getElementById('history');
+            historyElement.innerHTML = historyLog.join('<br>'); // Update the history log display
         }
 
         function saveToFirebase(name, phone, roll) {
