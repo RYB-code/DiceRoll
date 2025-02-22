@@ -62,12 +62,12 @@
 
         .dot2 { 
             top: 20%; 
-            left: 20%; /* Top-left corner */
+            left: 20%; 
         }
 
         .dot2-2 { 
             bottom: 20%; 
-            right: 20%; /* Bottom-right corner */
+            right: 20%; 
         }
 
         .dot3 { 
@@ -79,22 +79,22 @@
 
         .dot4 { 
             top: 20%; 
-            left: 20%; /* Top-left corner */
+            left: 20%; 
         }
 
         .dot4-2 { 
             top: 20%; 
-            right: 20%; /* Top-right corner */
+            right: 20%; 
         }
 
         .dot4-3 { 
             bottom: 20%; 
-            left: 20%; /* Bottom-left corner */
+            left: 20%; 
         }
 
         .dot4-4 { 
             bottom: 20%; 
-            right: 20%; /* Bottom-right corner */
+            right: 20%; 
         }
 
         .dot5 { 
@@ -109,47 +109,47 @@
             right: 20%; 
         }
 
-        .dot3-1 { /* Top left for dot3 */
+        .dot3-1 { 
             top: 20%;
             left: 20%;
         }
 
-        .dot3-2 { /* Center dot for dot3 */
+        .dot3-2 { 
             top: 40%;
             left: 40%;
         }
 
-        .dot3-3 { /* Bottom right for dot3 */
+        .dot3-3 { 
             bottom: 20%;
             right: 20%;
         }
 
-        .dot6-1 { /* Top left for dot6 */
+        .dot6-1 { 
             top: 15%;
             left: 15%;
         }
 
-        .dot6-2 { /* Middle left for dot6 */
+        .dot6-2 { 
             top: 40%;
             left: 15%;
         }
 
-        .dot6-3 { /* Bottom left for dot6 */
+        .dot6-3 { 
             bottom: 15%;
             left: 15%;
         }
 
-        .dot6-4 { /* Top right for dot6 */
+        .dot6-4 { 
             top: 15%;
             right: 15%;
         }
 
-        .dot6-5 { /* Middle right for dot6 */
+        .dot6-5 { 
             top: 40%;
             right: 15%;
         }
 
-        .dot6-6 { /* Bottom right for dot6 */
+        .dot6-6 { 
             bottom: 15%;
             right: 15%;
         }
@@ -254,7 +254,6 @@
             background-color: #45a049;
         }
 
-        /* Congratulations ribbon */
         .congratulations-ribbon {
             position: absolute;
             top: 30px;
@@ -268,7 +267,6 @@
             display: none;
         }
 
-        /* Fireworks effect */
         .fireworks {
             position: absolute;
             top: 0;
@@ -313,7 +311,7 @@
             <h2>Enter Your Details</h2>
             <input type="text" id="name" placeholder="Your Name" required>
             <input type="text" id="phone" placeholder="Your Phone Number" required>
-            <button onclick="submitForm()">Submit</button>
+            <button id="submitBtn">Submit</button>
         </div>
     </div>
 
@@ -332,70 +330,44 @@
         <div id="history" class="history">No rolls yet.</div>
     </div>
 
-    <!-- Congratulations Ribbon -->
     <div id="congratulations" class="congratulations-ribbon">Congratulations!</div>
 
-    <!-- Fireworks Effect -->
     <div id="fireworks" class="fireworks"></div>
-    
+
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js"></script>
 
-    <script>
-        // Firebase Config
-<script type="module">
-    // Firebase v9 Modular SDK Import
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
 
-    // Firebase Config
-    const firebaseConfig = {
-        apiKey: "AIzaSyDlKAT8l9kp_X1RXdSV6fOfwGZrt2o6pZA",
-        authDomain: "roll-result.firebaseapp.com",
-        databaseURL: "https://roll-result-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "roll-result",
-        storageBucket: "roll-result.firebasestorage.app",
-        messagingSenderId: "363988214142",
-        appId: "1:363988214142:web:235c0b9dca54f5d9ffd32f",
-        measurementId: "G-DSLWS2RMBW"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyDlKAT8l9kp_X1RXdSV6fOfwGZrt2o6pZA",
+            authDomain: "roll-result.firebaseapp.com",
+            databaseURL: "https://roll-result-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "roll-result",
+            storageBucket: "roll-result.firebasestorage.app",
+            messagingSenderId: "363988214142",
+            appId: "1:363988214142:web:235c0b9dca54f5d9ffd32f",
+            measurementId: "G-DSLWS2RMBW"
+        };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
-    // Now you can use the 'database' to interact with Firebase
-    function saveToFirebase(name, phone, roll) {
-        // Create a new reference in Firebase database
-        const newRollRef = push(ref(database, 'rolls')); // Push a new entry
-
-        // Set the data for this roll entry
-        set(newRollRef, {
-            name: name,
-            phone: phone,
-            roll: roll,
-            timestamp: Date.now() // You can add a timestamp
-        })
-        .then(() => {
-            console.log('Data sent to Firebase');
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }
         let hasRolled = false;
-        let historyLog = [];
         let userName = '';
         let userPhone = '';
-        let fireworkInterval;
 
-        // Show the modal on page load
+        // Show modal on page load
         window.onload = function() {
             document.getElementById('modal').style.display = 'flex';
         };
 
-        // Submit form and hide modal
+        // Form submit
+        document.getElementById('submitBtn').addEventListener('click', submitForm);
+
         function submitForm() {
             userName = document.getElementById('name').value;
             userPhone = document.getElementById('phone').value;
@@ -408,161 +380,66 @@
             }
         }
 
-        // Function to handle form submission
-        function handleFormSubmit(event) {
-            event.preventDefault(); // Prevent the form from submitting the traditional way
-
-            // Get values from the modal inputs
-            const name = document.getElementById('name').value;
-            const phone = document.getElementById('phone').value;
-            const roll = 6; // Replace with the actual roll value if dynamic
-
-            // Validate inputs
-            if (name && phone) {
-                // Save data to Google Sheets
-                saveToGoogleSheets(name, phone, roll);
-
-                // Close the modal (optional)
-                document.getElementById('modal').style.display = 'none';
-
-                // Enable the Roll Dice button (optional)
-                document.getElementById('rollButton').disabled = false;
-            } else {
-                alert('Please fill in both fields!');
+        function rollDice() {
+            if (hasRolled) {
+                return; 
             }
+
+            const rollButton = document.getElementById('rollButton');
+            const congratulationsRibbon = document.getElementById('congratulations');
+            const fireworks = document.getElementById('fireworks');
+
+            let roll1;
+
+            let rollingTime = 5000;
+            let timer = setInterval(function() {
+                roll1 = weightedRoll();
+                updateDiceDisplay(roll1);
+            }, 100);
+
+            setTimeout(function() {
+                clearInterval(timer);
+                roll1 = weightedRoll();
+                updateDiceDisplay(roll1);
+
+                congratulationsRibbon.style.display = 'block';
+                setTimeout(function() {
+                    congratulationsRibbon.style.display = 'none';
+                }, 20000);
+
+                triggerFireworks();
+
+                saveToFirebase(userName, userPhone, roll1);
+
+                hasRolled = true;
+                rollButton.disabled = true;
+            }, rollingTime);
         }
 
-        // Function to save data to Firebase
-        function saveToFirebase(name, phone, roll) {
-            // Create a new reference in Firebase database
-            const newRollRef = database.ref('rolls').push(); // Push a new entry
+        function weightedRoll() {
+            const rollValues = [1, 2, 3, 4, 5, 6];
+            const probabilities = [0.2, 0.2, 0.2, 0.2, 0.1, 0.2];
 
-            // Set the data for this roll entry
-            newRollRef.set({
-                name: name,
-                phone: phone,
-                roll: roll,
-                timestamp: Date.now() // You can add a timestamp
-            })
-            .then(() => {
-                console.log('Data sent to Firebase');
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }
+            const cumulativeProbabilities = [];
+            let cumulativeSum = 0;
 
-// Define probabilities (these are just example values; adjust as needed)
-    const probabilities = {
-        1: 0.2, // 30% chance of rolling a 1
-        2: 0.2, // 10% chance of rolling a 2
-        3: 0.2, // 20% chance of rolling a 3
-        4: 0.2, // 10% chance of rolling a 4
-        5: 0.1, // 10% chance of rolling a 5
-        6: 0.2  // 20% chance of rolling a 6
-    };
-
-// Roll Dice Function
-function rollDice() {
-    if (hasRolled) {
-        return;
-    }
-
-    const dice1 = document.getElementById('dice1');
-    const rollButton = document.getElementById('rollButton');
-    const congratulationsRibbon = document.getElementById('congratulations');
-    const fireworks = document.getElementById('fireworks');
-
-    let roll1;
-
-    // Dice roll simulation (5 seconds)
-    let rollingTime = 5000; // 5 seconds
-    let timer = setInterval(function() {
-        roll1 = weightedRoll(probabilities); // Get a weighted roll
-        updateDiceDisplay(roll1);
-    }, 100);
-
-    // After 5 seconds, stop the dice roll
-    setTimeout(function() {
-        clearInterval(timer);
-        roll1 = weightedRoll(probabilities); // Get a weighted roll;
-        updateDiceDisplay(roll1);
-
-        // Display Congratulations Ribbon
-        congratulationsRibbon.style.display = 'block';
-        setTimeout(function() {
-            congratulationsRibbon.style.display = 'none';
-        }, 20000);
-
-        // Trigger Fireworks
-        triggerFireworks();
-
-        // Record roll in history
-        historyLog.push(`Roll: ${roll1}`);
-        updateHistory();
-
-        // Save data to Google Sheets
-        saveToGoogleSheets(userName, userPhone, roll1);
-
-        // Disable the button and set flag
-        hasRolled = true;
-        rollButton.disabled = true;
-    }, rollingTime);
-
-}
-
-// Weighted roll function that considers probabilities   
-    function weightedRoll(probabilities) {
-        const rollValues = Object.keys(probabilities);
-        const cumulativeProbabilities = [];
-        let cumulativeSum = 0;
-
-        // Create cumulative probability array
-        for (let i = 0; i < rollValues.length; i++) {
-            cumulativeSum += probabilities[rollValues[i]];
-            cumulativeProbabilities.push(cumulativeSum);
-        }
-
-        // Generate a random number and select the corresponding roll
-        const randomNum = Math.random();
-        for (let i = 0; i < cumulativeProbabilities.length; i++) {
-            if (randomNum < cumulativeProbabilities[i]) {
-                return parseInt(rollValues[i]);
+            for (let i = 0; i < rollValues.length; i++) {
+                cumulativeSum += probabilities[i];
+                cumulativeProbabilities.push(cumulativeSum);
             }
+
+            const randomNum = Math.random();
+            for (let i = 0; i < cumulativeProbabilities.length; i++) {
+                if (randomNum < cumulativeProbabilities[i]) {
+                    return rollValues[i];
+                }
+            }
+            return rollValues[rollValues.length - 1];
         }
-        return parseInt(rollValues[rollValues.length - 1]); // In case of rounding errors
-    }
-// Function to save data to Google Sheets
-function saveToGoogleSheets(name, phone, roll) {
-    const url = 'https://script.google.com/macros/s/AKfycbwwCuYXNgReQX9ZRO4hECvwVRUz0NbUChabTROyJFoQvL8as1TCfKd03qwMsLdZFi3q/exec';  // Your Apps Script URL
-    const payload = {
-        "name": name,
-        "phone": phone,
-        "roll": roll
-    };
 
-
-    console.log("Sending data to Google Sheets:", payload); // Debugging log
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'text/plain' // Use text/plain to avoid preflight
-        },
-        body: JSON.stringify(payload),
-        mode: 'no-cors' // Disable CORS
-    })
-    .then(() => {
-        console.log('Data sent (response not accessible due to no-cors)');
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-        // Update Dice Display with correct dot classes
         function updateDiceDisplay(roll) {
             const dice1 = document.getElementById('dice1');
-            dice1.innerHTML = ''; // Clear the previous dots
+            dice1.innerHTML = '';
 
             if (roll === 1) {
                 dice1.innerHTML = '<div class="dot dot1"></div>';
@@ -579,17 +456,23 @@ function saveToGoogleSheets(name, phone, roll) {
             }
         }
 
-        // Update History Log Display
-        function updateHistory() {
-            const historyElement = document.getElementById('history');
-            historyElement.innerHTML = historyLog.join('<br>');
+        function saveToFirebase(name, phone, roll) {
+            const newRollRef = push(ref(database, 'rolls'));
+            set(newRollRef, {
+                name: name,
+                phone: phone,
+                roll: roll,
+                timestamp: Date.now()
+            }).then(() => {
+                console.log('Data sent to Firebase');
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
         }
 
-        // Trigger Fireworks Effect
         function triggerFireworks() {
             const fireworksContainer = document.getElementById('fireworks');
 
-            // Generate fireworks
             for (let i = 0; i < 10; i++) {
                 const firework = document.createElement('div');
                 firework.classList.add('firework');
@@ -598,7 +481,6 @@ function saveToGoogleSheets(name, phone, roll) {
                 fireworksContainer.appendChild(firework);
             }
 
-            // Clear fireworks after animation
             setTimeout(function() {
                 fireworksContainer.innerHTML = '';
             }, 50000);
