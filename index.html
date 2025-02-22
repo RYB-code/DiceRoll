@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dice Roller</title>
     <style>
-        body {
+                body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             display: flex;
@@ -321,7 +321,7 @@
         </div>
     </div>
 
-    <button class="roll-button" id="rollButton" onclick="rollDice()" disabled>Roll Dice</button>
+    <button class="roll-button" id="rollButton" disabled>Roll Dice</button>
 
     <div id="warning" class="warning">Only One Attempt!</div>
 
@@ -335,13 +335,11 @@
     <div id="fireworks" class="fireworks"></div>
 
     <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js"></script>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
         import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
 
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDlKAT8l9kp_X1RXdSV6fOfwGZrt2o6pZA",
             authDomain: "roll-result.firebaseapp.com",
@@ -353,6 +351,7 @@
             measurementId: "G-DSLWS2RMBW"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
@@ -361,7 +360,7 @@
         let userPhone = '';
 
         // Show modal on page load
-        window.onload = function() {
+        window.onload = function () {
             document.getElementById('modal').style.display = 'flex';
         };
 
@@ -380,9 +379,12 @@
             }
         }
 
+        // Add event listener to the Roll Dice button
+        document.getElementById('rollButton').addEventListener('click', rollDice);
+
         function rollDice() {
             if (hasRolled) {
-                return; 
+                return;
             }
 
             const rollButton = document.getElementById('rollButton');
@@ -391,26 +393,32 @@
 
             let roll1;
 
+            // Simulate rolling for 5 seconds
             let rollingTime = 5000;
-            let timer = setInterval(function() {
+            let timer = setInterval(function () {
                 roll1 = weightedRoll();
                 updateDiceDisplay(roll1);
             }, 100);
 
-            setTimeout(function() {
+            // Stop rolling after 5 seconds
+            setTimeout(function () {
                 clearInterval(timer);
                 roll1 = weightedRoll();
                 updateDiceDisplay(roll1);
 
+                // Show congratulations ribbon
                 congratulationsRibbon.style.display = 'block';
-                setTimeout(function() {
+                setTimeout(function () {
                     congratulationsRibbon.style.display = 'none';
                 }, 20000);
 
+                // Trigger fireworks
                 triggerFireworks();
 
+                // Save data to Firebase
                 saveToFirebase(userName, userPhone, roll1);
 
+                // Disable the button and set flag
                 hasRolled = true;
                 rollButton.disabled = true;
             }, rollingTime);
@@ -481,7 +489,7 @@
                 fireworksContainer.appendChild(firework);
             }
 
-            setTimeout(function() {
+            setTimeout(function () {
                 fireworksContainer.innerHTML = '';
             }, 50000);
         }
