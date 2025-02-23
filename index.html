@@ -5,7 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dice Roller</title>
     <style>
-                        body {
+        /* Add this new CSS for the pop-up */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(145deg, #ff8a00, #e52e71);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+            z-index: 1000;
+        }
+
+        .popup h2 {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .popup h3 {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .popup button {
+            padding: 12px 24px;
+            background-color: #ff5c8f;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup button:hover {
+            background-color: #e52e71;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Rest of your existing CSS */
+        body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             display: flex;
@@ -334,6 +388,13 @@
 
     <div id="fireworks" class="fireworks"></div>
 
+    <!-- Stylish Pop-up -->
+    <div id="popup" class="popup">
+        <h2>Congratulations!</h2>
+        <h3 id="popupResult"></h3>
+        <button id="closePopup">OK</button>
+    </div>
+
     <!-- Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
@@ -358,7 +419,7 @@
         let hasRolled = false;
         let userName = '';
         let userPhone = '';
-        let historyLog = []; // Array to store roll history
+        let historyLog = [];
 
         // Show modal on page load
         window.onload = function () {
@@ -420,8 +481,11 @@
                 saveToFirebase(userName, userPhone, roll1);
 
                 // Update history log
-                historyLog.push(`Roll: ${roll1}`); // Add the roll to the history log
-                updateHistory(); // Update the history log display
+                historyLog.push(`Roll: ${roll1}`);
+                updateHistory();
+
+                // Show stylish pop-up
+                showPopup(roll1);
 
                 // Disable the button and set flag
                 hasRolled = true;
@@ -431,7 +495,7 @@
 
         function weightedRoll() {
             const rollValues = [1, 2, 3, 4, 5, 6];
-            const probabilities = [0.2, 0.2, 0.2, 0.2, 0.1, 0.2];
+            const probabilities = [0.2, 0.2, 0.2, 0.1, 0.1, 0.2];
 
             const cumulativeProbabilities = [];
             let cumulativeSum = 0;
@@ -471,33 +535,19 @@
 
         function updateHistory() {
             const historyElement = document.getElementById('history');
-            historyElement.innerHTML = historyLog.join('<br>'); // Update the history log display
+            historyElement.innerHTML = historyLog.join('<br>');
         }
 
-        // 格式化时间戳为人类可读的时间
-        function formatTimestamp(timestamp) {
-            const date = new Date(timestamp); // 将时间戳转换为 Date 对象
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份补零
-            const day = String(date.getDate()).padStart(2, '0'); // 日期补零
-            const hours = String(date.getHours()).padStart(2, '0'); // 小时补零
-            const minutes = String(date.getMinutes()).padStart(2, '0'); // 分钟补零
-            const seconds = String(date.getSeconds()).padStart(2, '0'); // 秒补零
-
-            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; // 返回格式化时间
-        }
-
-        // 保存数据到 Firebase
         function saveToFirebase(name, phone, roll) {
-            const newRollRef = push(ref(database, 'rolls')); // 创建一个新的引用
-            const timestamp = Date.now(); // 获取当前时间的时间戳
-            const formattedTime = formatTimestamp(timestamp); // 将时间戳转换为人类可读的时间
+            const newRollRef = push(ref(database, 'rolls'));
+            const timestamp = Date.now();
+            const formattedTime = new Date(timestamp).toLocaleString();
 
             set(newRollRef, {
                 name: name,
                 phone: phone,
                 roll: roll,
-                time: formattedTime // 保存格式化时间
+                time: formattedTime
             })
             .then(() => {
                 console.log('Data sent to Firebase');
@@ -522,7 +572,19 @@
                 fireworksContainer.innerHTML = '';
             }, 50000);
         }
-    </script>
 
+        function showPopup(roll) {
+            const popup = document.getElementById('popup');
+            const popupResult = document.getElementById('popupResult');
+            const closePopup = document.getElementById('closePopup');
+
+            popupResult.textContent = `You rolled a ${roll}!`;
+            popup.style.display = 'block';
+
+            closePopup.addEventListener('click', () => {
+                popup.style.display = 'none';
+            });
+        }
+    </script>
 </body>
 </html>
