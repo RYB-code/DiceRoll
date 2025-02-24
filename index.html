@@ -383,6 +383,27 @@
             z-index: -1; /* Place the fireworks behind the content */
             pointer-events: none;
         }
+      
+        #copyText {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        #copyText:hover {
+            background-color: #45a049;
+        }
+      
+        #reminderText {
+            font-size: 16px;
+            color: #ff6600;
+            margin-top: 15px;
+            text-align: center;
+        }
 
     </style>
 </head>
@@ -443,9 +464,13 @@
     <!-- Stylish Pop-up -->
     <div id="popup" class="popup">
         <h2>Congratulations!</h2>
-        <h3 id="popupResult"></h3>
-        <button id="closePopup">OK</button>
+        <h3 id="popupResult">Your result is here!</h3>
+        <p id="reminderText">Please Screenshot and Copy the code <br> Send it to us.</p>
+        <button id="copyText">Copy</button>
+        <button id="closePopup" disabled>OK</button>
     </div>
+
+
 
     <!-- Firebase -->
     <script type="module">
@@ -546,27 +571,58 @@
                 // Trigger fireworks
                 triggerFireworks();
 
-                // Save data to Firebase
-                saveToFirebase(userName, userPhone, roll1);
+                // Save data to Firebase and get the key
+                saveToFirebase(userName, userPhone, roll1)
+                    .then((rollKey) => {
+                        // Update history log
+                        historyLog.push(`Roll: ${roll1}`);
+                        updateHistory();
 
-                // Update history log
-                historyLog.push(`Roll: ${roll1}`);
-                updateHistory();
+                        // Show the stylish pop-up with results
+                        popupResult.innerHTML = `You rolled a ${roll1}! <br> <br> Your Verification Code: <b>${rollKey}</b>`; // Show the result and code in the pop-up
+                        popup.style.display = 'block'; // Display the pop-up
 
-                // Show the stylish pop-up with results
-                popupResult.textContent = `You rolled a ${roll1}!`; // Show the result in the pop-up
-                popup.style.display = 'block'; // Display the pop-up
+                        // Close the pop-up when the "OK" button is clicked
+                        closePopup.addEventListener('click', () => {
+                            popup.style.display = 'none'; // Hide the pop-up
+                        });
 
-                // Close the pop-up when the "OK" button is clicked
-                closePopup.addEventListener('click', () => {
-                    popup.style.display = 'none'; // Hide the pop-up
-                });
-
-                // Disable the button and set flag
-                hasRolled = true;
-                rollButton.disabled = true;
+                        // Disable the button and set flag
+                        hasRolled = true;
+                        rollButton.disabled = true;
+                    })
+                    .catch((error) => {
+                        console.error('Error saving to Firebase:', error);
+                    });
             }, rollingTime);
         }
+
+                // Function to copy only the code (not the reminder text)
+                function copyTextToClipboard() {
+                    const textToCopy = document.getElementById("popupResult").textContent; // Only copy the code
+
+                    // Copy the text to the clipboard
+                    navigator.clipboard.writeText(textToCopy).then(function() {
+                        console.log("Text successfully copied to clipboard!");
+                        alert("Code copied!");
+
+                        // Enable the "OK" button once the code is copied
+                        document.getElementById("closePopup").disabled = false;
+                    }).catch(function(err) {
+                        console.error("Failed to copy text: ", err);
+                        alert("Failed to copy code.");
+                    });
+                }
+
+                // Event listener for the "Copy" button
+                document.getElementById("copyText").addEventListener("click", function() {
+                    copyTextToClipboard();
+                });
+
+                // Event listener for the "OK" button (Close the popup)
+                document.getElementById("closePopup").addEventListener("click", function() {
+                    document.getElementById("popup").style.display = "none"; // Close popup
+                });
 
 
         function weightedRoll() {
@@ -619,19 +675,21 @@
             const timestamp = Date.now();
             const formattedTime = new Date(timestamp).toLocaleString();
 
-            set(newRollRef, {
+            return set(newRollRef, {
                 name: name,
                 phone: phone,
                 roll: roll,
                 time: formattedTime
             })
             .then(() => {
-                console.log('Data sent to Firebase');
+                // Return the key generated for the new entry
+                return newRollRef.key;
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
         }
+
 
         function triggerFireworks() {
             const fireworksContainer = document.getElementById('fireworks');
